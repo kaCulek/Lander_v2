@@ -5,6 +5,32 @@
 #include "Lander.h"
 #include "SDL.h"
 
+
+//GameParameters-----------------------------------------------------------
+
+#define POINTS_COUNT 15
+
+static SDL_Point points[POINTS_COUNT] = {
+	{ 0, 480 },
+	{ 50, 450 },
+	{ 100, 400 },
+	{ 125, 400 },
+	{ 150, 350 },
+	{ 200, 400 },
+	{ 250, 450 },
+	{ 300, 450 },
+	{ 350, 400 },
+	{ 400, 400 },
+	{ 450, 300 },
+	{ 500, 250 },
+	{ 550, 300 },
+	{ 600, 300 },
+	{ 640, 480 }
+};
+
+
+//GameParameters-----------------------------------------------------------
+
 #define MAX_LOADSTRING 100
 
 // Global Variables:
@@ -144,6 +170,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case IDM_NEWGAME:
 
 			SDL_Window *window;                    // Declare a pointer
+			SDL_Renderer* renderer;
 
 			SDL_Init(SDL_INIT_VIDEO);              // Initialize SDL2
 
@@ -164,14 +191,28 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				return 1;
 			}
 
-			// The window is open: could enter program loop here (see SDL_PollEvent())
-			//SDL_Delay(3000);  // Pause execution for 3000 milliseconds, for example
+			// We must call SDL_CreateRenderer in order for draw calls to affect this window.
+			renderer = SDL_CreateRenderer(window, -1, 0);
 
-			// Close and destroy the window
-			//SDL_DestroyWindow(window);
+			// Select the color for drawing. It is set to red here.
+			// Render screen black
+			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 
-			// Clean up
-			//SDL_Quit();
+			// Clear the entire screen to our selected color.
+			SDL_RenderClear(renderer);
+
+			SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+			SDL_RenderDrawLines(renderer, points, POINTS_COUNT);
+			// Up until now everything was drawn behind the scenes.
+			// This will show the new, red contents of the window.
+			SDL_RenderPresent(renderer);
+
+			// Give us time to see the window.
+			SDL_Delay(5000);
+
+			SDL_DestroyWindow(window);
+			// Always be sure to clean up
+			SDL_Quit();
 			break;
 		case IDM_EXIT:
 			DestroyWindow(hWnd);
