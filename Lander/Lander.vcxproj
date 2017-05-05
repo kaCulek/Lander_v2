@@ -97,6 +97,7 @@
     <ResourceCompile Include="Lander.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="lander.bmp" />
     <Image Include="Lander.ico" />
     <Image Include="small.ico" />
   </ItemGroup>

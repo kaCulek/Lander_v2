@@ -9,7 +9,6 @@
 //GameParameters-----------------------------------------------------------
 
 #define POINTS_COUNT 15
-#define LANDER_POINTS_COUNT 4
 
 static SDL_Point points[POINTS_COUNT] = {
 	{ 0, 480 },
@@ -27,15 +26,6 @@ static SDL_Point points[POINTS_COUNT] = {
 	{ 550, 300 },
 	{ 600, 300 },
 	{ 640, 480 }
-};
-
-
-
-static SDL_Point lander[LANDER_POINTS_COUNT] = {
-	{ 320, 20 },
-	{ 310, 40 },
-	{ 330, 40 },
-	{ 320, 20 }
 };
 
 
@@ -178,7 +168,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
 			break;
 		case IDM_NEWGAME:
-
+		{
 			SDL_Window *window;                    // Declare a pointer
 			SDL_Renderer* renderer;
 
@@ -203,31 +193,32 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			// We must call SDL_CreateRenderer in order for draw calls to affect this window.
 			renderer = SDL_CreateRenderer(window, -1, 0);
-
-			// Select the color for drawing. It is set to red here.
-			// Render screen black
-			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-
-			// Clear the entire screen to our selected color.
 			SDL_RenderClear(renderer);
-
-			
+			//Background color
 			SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-			//Add surface
-			SDL_RenderDrawLines(renderer, points, POINTS_COUNT);
 			//Add lander
-			SDL_RenderDrawLines(renderer, lander, LANDER_POINTS_COUNT);
-			// Up until now everything was drawn behind the scenes.
-			// This will show the new, red contents of the window.
+			SDL_Surface * image = SDL_LoadBMP("lander.bmp");
+			SDL_Texture * texture = SDL_CreateTextureFromSurface(renderer, image);
+			SDL_FreeSurface(image);
+			SDL_Rect dstrect = { 100, 100, 75, 75 };
+			SDL_RenderCopy(renderer, texture, NULL, &dstrect);
+			SDL_RenderPresent(renderer);
+			//move lander
+			SDL_RenderClear(renderer);
+			dstrect.x = 500;
+			SDL_RenderCopy(renderer, texture, NULL, &dstrect);
 			SDL_RenderPresent(renderer);
 
 			// Give us time to see the window.
-			SDL_Delay(5000);
+			SDL_Delay(2000);
 
+			SDL_DestroyTexture(texture);
+			SDL_DestroyRenderer(renderer);
 			SDL_DestroyWindow(window);
 			// Always be sure to clean up
 			SDL_Quit();
-			break;
+		}
+		break;
 		case IDM_EXIT:
 			DestroyWindow(hWnd);
 			break;
