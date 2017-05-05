@@ -10,6 +10,7 @@
 #define IDD_ABOUTBOX			103
 #define IDM_ABOUT				104
 #define IDM_EXIT				105
+#define IDM_NEWGAME 201
 #define IDI_LANDER			107
 #define IDI_SMALL				108
 #define IDC_LANDER			109
