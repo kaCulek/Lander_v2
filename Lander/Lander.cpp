@@ -9,6 +9,7 @@
 //GameParameters-----------------------------------------------------------
 
 #define POINTS_COUNT 15
+#define LANDER_POINTS_COUNT 4
 
 static SDL_Point points[POINTS_COUNT] = {
 	{ 0, 480 },
@@ -26,6 +27,15 @@ static SDL_Point points[POINTS_COUNT] = {
 	{ 550, 300 },
 	{ 600, 300 },
 	{ 640, 480 }
+};
+
+
+
+static SDL_Point lander[LANDER_POINTS_COUNT] = {
+	{ 320, 20 },
+	{ 310, 40 },
+	{ 330, 40 },
+	{ 320, 20 }
 };
 
 
@@ -201,8 +211,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			// Clear the entire screen to our selected color.
 			SDL_RenderClear(renderer);
 
+			
 			SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+			//Add surface
 			SDL_RenderDrawLines(renderer, points, POINTS_COUNT);
+			//Add lander
+			SDL_RenderDrawLines(renderer, lander, LANDER_POINTS_COUNT);
 			// Up until now everything was drawn behind the scenes.
 			// This will show the new, red contents of the window.
 			SDL_RenderPresent(renderer);
