@@ -182,7 +182,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				640,                               // width, in pixels
 				480,                               // height, in pixels
 				SDL_WINDOW_OPENGL                  // flags - see below
-				);
+			);
 
 			// Check that the window was successfully created
 			if (window == NULL) {
@@ -200,7 +200,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			SDL_Surface * image = SDL_LoadBMP("lander.bmp");
 			SDL_Texture * texture = SDL_CreateTextureFromSurface(renderer, image);
 			SDL_FreeSurface(image);
-			SDL_Rect dstrect = { 100, 100, 75, 75 };
+			SDL_Rect dstrect = { 310, 0, 20, 20 };
 			SDL_RenderCopy(renderer, texture, NULL, &dstrect);
 			SDL_RenderPresent(renderer);
 
@@ -212,7 +212,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			SDL_Event e;
 			bool moveLeft = false;
 			bool moveRight = false;
+			int moveDownBy = 0;
 			int frameTick = 0;
+			int windowW = 0;
+			int windowH = 0;
+			int newY = 0;
 
 			while (!quit)
 			{
@@ -236,23 +240,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 							moveRight = true;
 						}
 						if (e.key.keysym.sym == SDLK_UP){
-							dstrect.y = dstrect.y - 5;
+							moveDownBy = -5;
 						}
 					}
 				}
 				
 
 				SDL_RenderClear(renderer);
-
+				SDL_GetWindowSize(window, &windowW, &windowH);
 				if (moveLeft)
 				{
-					dstrect.x = dstrect.x - 10;
+					if (dstrect.x > 0)
+					{
+						dstrect.x = dstrect.x - 10;
+					}
 					moveLeft = false;
 				}
 
 				if (moveRight)
 				{
-					dstrect.x = dstrect.x + 10;
+					if ((dstrect.x + dstrect.w) < windowW)
+					{
+						dstrect.x = dstrect.x + 10;
+					}
 					moveRight = false;
 				}
 				
@@ -267,8 +277,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					{
 						gravityFactor = 5;
 					}
-					dstrect.y = dstrect.y + gravityFactor;
+					moveDownBy = gravityFactor;
 					frameTick = 0;
+				}
+
+				if (moveDownBy != 0)
+				{
+					newY = dstrect.y + moveDownBy;
+					if (newY >= 0)
+					{
+						dstrect.y = newY;
+					}
+
+					if((dstrect.y + dstrect.h) >= windowH)
+					{
+						quit = true;
+					}
+					
+					moveDownBy = 0;
 				}
 				
 				SDL_RenderCopy(renderer, texture, NULL, &dstrect);
