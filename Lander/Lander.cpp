@@ -190,7 +190,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				//printf("Could not create window: %s\n", SDL_GetError());
 				return 1;
 			}
-
+			//init game
 			// We must call SDL_CreateRenderer in order for draw calls to affect this window.
 			renderer = SDL_CreateRenderer(window, -1, 0);
 			SDL_RenderClear(renderer);
@@ -203,19 +203,61 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			SDL_Rect dstrect = { 100, 100, 75, 75 };
 			SDL_RenderCopy(renderer, texture, NULL, &dstrect);
 			SDL_RenderPresent(renderer);
-			//move lander
-			SDL_RenderClear(renderer);
-			dstrect.x = 500;
-			SDL_RenderCopy(renderer, texture, NULL, &dstrect);
-			SDL_RenderPresent(renderer);
+			//run game
+			//Main loop flag
+			//Event handler
+			bool quit = false;
+			
+			SDL_Event e;
+			bool moveLeft = false;
+			bool moveRight = false;
 
-			// Give us time to see the window.
-			SDL_Delay(2000);
+			while (!quit)
+			{
+				//Handle events on queue
+				while (SDL_PollEvent(&e) != 0)
+				{
+					moveLeft = false;
+					moveRight = false;
+					//User requests quit
+					if (e.type == SDL_QUIT)
+					{
+						quit = true;
+					}
+					if (e.type == SDL_KEYDOWN)
+					{
+						if (e.key.keysym.sym == SDLK_LEFT){
+							moveLeft = true;
+						}
+						if (e.key.keysym.sym == SDLK_RIGHT){
+							moveRight = true;
+						}
+					}
+				}
+				
+
+				SDL_RenderClear(renderer);
+
+				if (moveLeft)
+				{
+					dstrect.x = dstrect.x - 10;
+					moveLeft = false;
+				}
+
+				if (moveRight)
+				{
+					dstrect.x = dstrect.x + 10;
+					moveRight = false;
+				}
+				
+				
+				SDL_RenderCopy(renderer, texture, NULL, &dstrect);
+				SDL_RenderPresent(renderer);
+			}
 
 			SDL_DestroyTexture(texture);
 			SDL_DestroyRenderer(renderer);
 			SDL_DestroyWindow(window);
-			// Always be sure to clean up
 			SDL_Quit();
 		}
 		break;
