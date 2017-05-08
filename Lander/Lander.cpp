@@ -194,9 +194,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			// We must call SDL_CreateRenderer in order for draw calls to affect this window.
 			renderer = SDL_CreateRenderer(window, -1, 0);
 			SDL_RenderClear(renderer);
-			//Background color
-			//SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-			SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 			//Add lander
 			SDL_Surface * image = SDL_LoadBMP("lander.bmp");
 			SDL_Texture * texture = SDL_CreateTextureFromSurface(renderer, image);
@@ -299,7 +296,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 				
 				SDL_RenderCopy(renderer, texture, NULL, &dstrect);
-				
+				SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+				SDL_RenderDrawLines(renderer, points, POINTS_COUNT);
+				SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 
 				SDL_RenderPresent(renderer);
 			}
