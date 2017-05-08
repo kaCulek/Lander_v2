@@ -203,6 +203,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			SDL_Rect dstrect = { 100, 100, 75, 75 };
 			SDL_RenderCopy(renderer, texture, NULL, &dstrect);
 			SDL_RenderPresent(renderer);
+
 			//run game
 			//Main loop flag
 			//Event handler
@@ -211,9 +212,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			SDL_Event e;
 			bool moveLeft = false;
 			bool moveRight = false;
+			int frameTick = 0;
 
 			while (!quit)
 			{
+				frameTick++;
 				//Handle events on queue
 				while (SDL_PollEvent(&e) != 0)
 				{
@@ -231,6 +234,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						}
 						if (e.key.keysym.sym == SDLK_RIGHT){
 							moveRight = true;
+						}
+						if (e.key.keysym.sym == SDLK_UP){
+							dstrect.y = dstrect.y - 5;
 						}
 					}
 				}
@@ -250,6 +256,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					moveRight = false;
 				}
 				
+				if (frameTick >= 1000)
+				{
+					int gravityFactor = dstrect.y / 20;
+					if (gravityFactor >= 20)
+					{
+						gravityFactor = 20;
+					}
+					if (gravityFactor < 5)
+					{
+						gravityFactor = 5;
+					}
+					dstrect.y = dstrect.y + gravityFactor;
+					frameTick = 0;
+				}
 				
 				SDL_RenderCopy(renderer, texture, NULL, &dstrect);
 				SDL_RenderPresent(renderer);
