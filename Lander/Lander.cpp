@@ -215,6 +215,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			int windowW = 0;
 			int windowH = 0;
 			int newY = 0;
+			bool hasLanded = false;
+			bool hasLandedSuccessfully = false;
 
 			while (!quit)
 			{
@@ -295,12 +297,43 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					moveDownBy = 0;
 				}
 				
+				for (int i = 0; i < (POINTS_COUNT - 1); i++)
+				{
+					SDL_Point x1 = points[i];
+					SDL_Point x2 = points[i+1];
+					hasLanded = SDL_IntersectRectAndLine(&dstrect, &x1.x, &x1.y, &x2.x, &x2.y);
+					if (hasLanded)
+					{
+						hasLandedSuccessfully = x1.y == x2.y;
+						break;
+					}
+				}
+				if (hasLanded)
+				{
+					quit = true;
+				}
+
 				SDL_RenderCopy(renderer, texture, NULL, &dstrect);
 				SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
 				SDL_RenderDrawLines(renderer, points, POINTS_COUNT);
 				SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 
 				SDL_RenderPresent(renderer);
+			}
+
+			if (hasLandedSuccessfully)
+			{
+				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
+					"Info",
+					"Landing Successful.",
+					NULL);
+			}
+			else
+			{
+				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
+					"Info",
+					"Rekt.",
+					NULL);
 			}
 
 			SDL_DestroyTexture(texture);
