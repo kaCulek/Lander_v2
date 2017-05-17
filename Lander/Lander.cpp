@@ -176,7 +176,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			// Create an application window with the following settings:
 			window = SDL_CreateWindow(
-				"An SDL2 window",                  // window title
+				"Lunar Lander",                  // window title
 				SDL_WINDOWPOS_UNDEFINED,           // initial x position
 				SDL_WINDOWPOS_UNDEFINED,           // initial y position
 				640,                               // width, in pixels
@@ -324,15 +324,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			if (hasLandedSuccessfully)
 			{
 				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
-					"Info",
 					"Landing Successful.",
+					"You landed successfully.",
 					NULL);
 			}
 			else
 			{
 				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
-					"Info",
-					"Rekt.",
+					"Landing Failed.",
+					"You have created a two mile crater.",
 					NULL);
 			}
 
